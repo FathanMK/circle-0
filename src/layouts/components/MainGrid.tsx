@@ -1,10 +1,7 @@
 import { Grid } from "@chakra-ui/react";
-import Navbar from "@/components/Navbar/Navbar";
-import Home from "@/components/Home/Home";
+import { ReactNode } from "react";
 
-import Sidebar from "@/layouts/Sidebar/Sidebar";
-
-export default function App() {
+export default function MainGrid({ children }: { children: ReactNode }) {
   return (
     <Grid
       h="100vh"
@@ -17,9 +14,7 @@ export default function App() {
       rowGap={0}
       overflow="hidden"
     >
-      <Navbar />
-      <Home />
-      <Sidebar />
+      {children}
     </Grid>
   );
 }
