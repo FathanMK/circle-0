@@ -39,12 +39,11 @@ class LikeServices {
     }
   }
 
-  // FIND THE THREAD ID, LENGTH = HOW MANY LIKES, CHECK IF USER ALREADY LIKED BY ID !
   async findByThreadId(req: Request, res: Response) {
     try {
       const { threadId } = req.params;
 
-      const threadLikes = await LikeRepository.find({
+      const likes = await LikeRepository.find({
         where: { thread: { id: threadId } },
         relations: { user: true },
         select: {
@@ -56,9 +55,42 @@ class LikeServices {
 
       return res.status(200).json({
         status: "Success",
-        message: "Likes by thread is successfully returned!",
-        likes: threadLikes,
+        likes,
       });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Something error on the server!", error });
+    }
+  }
+
+  async deleteLike(req: Request, res: Response) {
+    try {
+      const data = req.body;
+      const user = await UserRepository.findOne({
+        where: { id: data.userId },
+        select: { likes: { id: true, thread: { id: true } } },
+        relations: { likes: { thread: true } },
+      });
+
+      const likeId = user?.likes.filter(
+        (like) => like.thread.id === data.threadId
+      )[0].id;
+
+      await LikeRepository.delete(likeId as string)
+        .then(() =>
+          res.status(200).json({
+            status: "Success",
+            message: `Like with ID: ${likeId} is successfully deleted!`,
+          })
+        )
+        .catch((error) =>
+          res.status(500).json({
+            status: "Failed",
+            message: "Something wrong while deleting like!",
+            error,
+          })
+        );
     } catch (error) {
       return res
         .status(500)

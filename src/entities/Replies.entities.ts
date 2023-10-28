@@ -14,10 +14,10 @@ export class Reply {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => User, (user) => user.replies)
+  @ManyToOne(() => User, (user) => user.replies, { onDelete: "CASCADE" })
   user: User;
 
-  @ManyToOne(() => Thread, (thread) => thread.replies)
+  @ManyToOne(() => Thread, (thread) => thread.replies, { onDelete: "CASCADE" })
   thread: Thread;
 
   @CreateDateColumn()

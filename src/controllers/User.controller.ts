@@ -2,8 +2,16 @@ import { Request, Response } from "express";
 import UserService from "../services/User.service";
 
 class UserController {
-  create(req: Request, res: Response) {
-    UserService.create(req, res);
+  // REGISTER
+  register(req: Request, res: Response) {
+    UserService.register(req, res);
+  }
+  // LOGIN
+  login(req: Request, res: Response) {
+    UserService.login(req, res);
+  }
+  findById(req: Request, res: Response) {
+    UserService.findById(req, res);
   }
 }
 

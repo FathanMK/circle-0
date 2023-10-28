@@ -1,29 +1,55 @@
 import { Request, Response } from "express";
+import getCloudinaryImageName from "../utils/getCloudinaryImageName";
 import ThreadSchema from "../validator/Thread.validate";
 import { ThreadRepository, UserRepository } from "../repositories";
+import cloudinary from "../config/cloudinary";
+import type { RequestWithUserId } from "../interface/RequestWithUserId";
 
 class ThreadServices {
-  async create(req: Request, res: Response): Promise<Response> {
+  async create(req: RequestWithUserId, res: Response): Promise<Response> {
     try {
       // GET INFORMATION
       const data = req.body;
+      const userId = req.userId;
+      const file = req.file;
+      let imageSrc;
 
       // JOI VALIDATION
-      const { error, value } = ThreadSchema.validate(data);
+      const { error } = ThreadSchema.validate(data);
 
       if (error)
         return res
           .status(422)
           .json({ status: "Failed", message: "Input is invalid!" });
 
-      // GET USER WHO THREAD BELONGS TO, eg: 0 --- TODO: PROBABLY USING JWT TOKEN FOR ID
+      // Image
+      if (file) {
+        const b64 = Buffer.from(file?.buffer).toString("base64");
+        const dataURI = `data:${file.mimetype};base64,${b64}`;
+        await cloudinary.uploader
+          .upload(dataURI, {
+            folder: `_Circle/_Threads/`,
+            resource_type: "auto",
+          })
+          .then((res) => (imageSrc = res.url))
+          .catch((error) => {
+            return res.status(500).json({ message: error });
+          });
+      }
+
+      // GET USER WHO THREAD BELONGS TO
       const user = await UserRepository.findOneBy({
-        id: "7e4d2c4e-99be-44f8-8d64-1389cb797456",
+        id: userId,
       });
+
+      const newThread: any = {
+        content: data.content,
+        image: imageSrc,
+      };
 
       // CREATE THREAD
       const thread = ThreadRepository.create({
-        ...value,
+        ...newThread,
         user,
       });
 
@@ -48,7 +74,7 @@ class ThreadServices {
     }
   }
 
-  async findAll(req: Request, res: Response) {
+  async findAll(req: Request, res: Response): Promise<Response> {
     try {
       // GET ALL THREADS
       const threads = await ThreadRepository.find({
@@ -84,13 +110,37 @@ class ThreadServices {
     }
   }
 
-  async findWithId(req: Request, res: Response) {
+  async findWithId(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
 
       const thread = await ThreadRepository.findOne({
         where: { id },
-        relations: { replies: true, user: true },
+        select: {
+          id: true,
+          content: true,
+          image: true,
+          created_at: true,
+          user: {
+            id: true,
+            username: true,
+            full_name: true,
+            photo_profile: true,
+          },
+          likes: {
+            id: true,
+            user: {
+              id: true,
+            },
+          },
+          replies: {
+            id: true,
+            user: {
+              id: true,
+            },
+          },
+        },
+        relations: { replies: true, likes: true, user: true },
       });
 
       if (!thread)
@@ -100,8 +150,7 @@ class ThreadServices {
 
       return res.status(200).json({
         status: "Success",
-        message: "Thread is successfully returned!",
-        data: thread,
+        thread,
       });
     } catch (error) {
       return res
@@ -110,7 +159,7 @@ class ThreadServices {
     }
   }
 
-  async findAllWithLimit(req: Request, res: Response) {
+  async findAllWithLimit(req: Request, res: Response): Promise<Response> {
     try {
       const { limit } = req.query;
 
@@ -125,20 +174,79 @@ class ThreadServices {
           id: true,
           content: true,
           image: true,
-          posted_at: true,
+          created_at: true,
           user: {
             id: true,
             username: true,
             full_name: true,
             photo_profile: true,
           },
+          likes: {
+            id: true,
+            user: {
+              id: true,
+            },
+          },
+          replies: {
+            id: true,
+            user: {
+              id: true,
+            },
+          },
         },
         relations: {
           user: true,
+          likes: {
+            user: true,
+          },
+          replies: {
+            user: true,
+          },
+        },
+        order: {
+          created_at: "DESC",
         },
       });
 
       return res.status(200).json({ status: "Success", threads });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Something error on the server!", error });
+    }
+  }
+
+  async delete(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id } = req.params;
+
+      const thread = await ThreadRepository.findOne({
+        where: { id },
+        relations: { replies: true, likes: true },
+      });
+
+      if (!thread) {
+        return res
+          .status(404)
+          .json({ status: "Failed", message: "Thread didn't exist!" });
+      }
+
+      if (thread.image) {
+        const img = getCloudinaryImageName(thread.image);
+
+        await cloudinary.uploader
+          .destroy(`_Circle/_Threads/${img}`)
+          .catch((error) => res.status(500).json({ message: error }));
+      }
+
+      return await ThreadRepository.delete(id)
+        .then(() =>
+          res.status(200).json({
+            status: "Success",
+            message: `Thread with id ${id} is successfully deleted!`,
+          })
+        )
+        .catch((error) => res.status(500).json({ message: error }));
     } catch (error) {
       return res
         .status(500)

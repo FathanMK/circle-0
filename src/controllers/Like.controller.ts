@@ -8,6 +8,9 @@ class LikeController {
   findByThreadId(req: Request, res: Response) {
     LikeService.findByThreadId(req, res);
   }
+  deleteLike(req: Request, res: Response) {
+    LikeService.deleteLike(req, res);
+  }
 }
 
 export default new LikeController();

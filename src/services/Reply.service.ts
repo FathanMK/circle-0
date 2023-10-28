@@ -11,10 +11,10 @@ class ReplyServices {
       const data = req.body;
 
       const user = await UserRepository.findOneBy({
-        id: "7e4d2c4e-99be-44f8-8d64-1389cb797456",
+        id: data.userId,
       });
       const thread = await ThreadRepository.findOneBy({
-        id: "788b76aa-07b7-49ee-a92a-ae5df634b7aa",
+        id: data.threadId,
       });
 
       const reply = ReplyRepository.create({ ...data, user, thread });
@@ -56,6 +56,17 @@ class ReplyServices {
 
       const replies = await ReplyRepository.find({
         where: { thread: { id: threadId } },
+        select: {
+          thread: {
+            id: true,
+          },
+          user: {
+            full_name: true,
+            username: true,
+            created_at: true,
+            photo_profile: true,
+          },
+        },
         relations: {
           thread: true,
           user: true,
@@ -64,8 +75,7 @@ class ReplyServices {
 
       return res.status(200).json({
         status: "Success",
-        message: "Likes by thread is successfully returned!",
-        replies: replies,
+          replies,
       });
     } catch (error) {
       return res

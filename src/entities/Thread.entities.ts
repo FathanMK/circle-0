@@ -22,16 +22,13 @@ export class Thread {
   @Column({ nullable: true })
   image: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  posted_at: Date;
-
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.threads)
+  @ManyToOne(() => User, (user) => user.threads, { onDelete: "CASCADE" })
   user: User;
 
   @OneToMany(() => Reply, (reply) => reply.thread)

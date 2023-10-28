@@ -14,6 +14,9 @@ class ThreadControllers {
   findWithId(req: Request, res: Response) {
     ThreadService.findWithId(req, res);
   }
+  delete(req: Request, res: Response) {
+    ThreadService.delete(req, res);
+  }
 }
 
 export default new ThreadControllers();

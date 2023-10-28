@@ -1,8 +1,8 @@
 import Joi from "joi";
 
 const ThreadSchema = Joi.object({
-  content: Joi.string().allow(""),
-  image: Joi.string().allow(null),
+  content: Joi.string(),
+  image: Joi.string(),
 });
 
 export default ThreadSchema;

@@ -9,4 +9,6 @@ likeRoutes.post("/like", LikeController.create);
 // FIND LIKES BY THREAD ID
 likeRoutes.get("/like/:threadId", LikeController.findByThreadId);
 
+likeRoutes.post("/liketest", LikeController.deleteLike);
+
 export default likeRoutes;
