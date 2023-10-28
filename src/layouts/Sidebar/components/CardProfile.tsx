@@ -1,6 +1,9 @@
 import { Card, Flex, Text, Box, Image, Avatar, Button } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function CardProfile() {
+  const { user } = useSelector((state: RootState) => state.user);
   return (
     <Card
       basis="45%"
@@ -20,7 +23,13 @@ export default function CardProfile() {
           w="full"
           objectFit="cover"
         />
-        <Avatar size="lg" pos="absolute" ml={2} bottom="-28px" />
+        <Avatar
+          size="lg"
+          pos="absolute"
+          src={user?.photo_profile}
+          ml={2}
+          bottom="-28px"
+        />
       </Box>
       <Button
         ml="auto"
@@ -34,17 +43,19 @@ export default function CardProfile() {
       </Button>
       <Flex direction="column" gap={0.5} mt={-4}>
         <Text fontSize="xl" fontWeight={700}>
-          ✨ Stella Audhina ✨
+          {user?.full_name}
         </Text>
-        <Text color="whiteAlpha.600">@audhinafh</Text>
-        <Text>picked by the worms, and weird fishes</Text>
+        <Text color="whiteAlpha.600">@{user?.username}</Text>
+        <Text>{user?.bio}</Text>
         <Flex align="center" gap={4}>
+          {/* TODO FOLLOWING BY LENGTH OR MAKE SERVICE */}
           <Text fontWeight={600}>
             291{" "}
             <Text as="span" color="whiteAlpha.600">
               Following
             </Text>
           </Text>
+          {/* TODO FOLLOWERS BY LENGTH OR MAKE SERVICE */}
           <Text fontWeight={600}>
             23{" "}
             <Text as="span" color="whiteAlpha.600">

@@ -2,13 +2,13 @@ import { Link } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { NavLink as NavLinkRouter, To } from "react-router-dom";
 
-interface NavLinkProps {
+interface INavLinkProps {
   children: ReactNode;
   className: string;
   to: To;
 }
 
-export default function NavLink({ children, className, to }: NavLinkProps) {
+export default function NavLink({ children, className, to }: INavLinkProps) {
   return (
     <Link
       className={className}

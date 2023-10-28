@@ -1,13 +1,19 @@
 import { Button, Flex, Grid, Text } from "@chakra-ui/react";
 import { Heart, Home, Search, UserCircle2 } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import NavLink from "./components/NavLink";
-import LogOutButton from "./components/LogOutButton";
+import NavLink from "./_components/NavLink";
+import { LogInButton, LogOutButton } from "./_components/LogButton";
+import { RootState } from "@/store";
 
 export default function Navbar() {
+  // USE VARIABLE BELOW TO GET ACTIVE LINK
   const location = useLocation();
   const currentUrl = location.pathname;
+
+  const { user } = useSelector((state: RootState) => state.user);
+
   return (
     <Grid
       as="nav"
@@ -16,7 +22,7 @@ export default function Navbar() {
       borderRight="1px solid hsl(0 100% 100% / 15%)"
     >
       <Flex direction="column" gap={4} px={2}>
-        <Text fontSize="5xl" px={4} color="accent" fontWeight={600}>
+        <Text as="h1" fontSize="4xl" px={4} color="accent" fontWeight={600}>
           circle
         </Text>
         <Flex direction="column" align="flex-start" gap={4}>
@@ -55,7 +61,7 @@ export default function Navbar() {
         >
           Create Post
         </Button>
-        <LogOutButton />
+        {user ? <LogOutButton /> : <LogInButton />}
       </Flex>
     </Grid>
   );

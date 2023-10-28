@@ -2,8 +2,10 @@ interface Thread {
   id?: string;
   content?: string;
   image?: string;
-  posted_at?: Date;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at?: string;
   user?: User;
+  likes?: Like[];
+  totalLikes?: number;
+  replies?: Reply[];
+  totalReplies?: number;
 }

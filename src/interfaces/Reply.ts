@@ -4,6 +4,5 @@ interface Reply {
   image?: string;
   user?: User;
   thread?: Thread;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at?: string;
 }

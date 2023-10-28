@@ -1,47 +1,38 @@
-import { Box, Text, Flex, Spinner } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector, useDispatch } from "react-redux";
 
+import { RootState } from "@/store";
 import axiosFetch from "@/config/axiosFetch";
-import CircleTweet from "@/features/CircleTweet/CircleTweet";
-import CreateThread from "@/features/CreateThread/CreateThread";
+import { getUser } from "@/slices/user/userSlice";
+import CreateThread from "./_components/CreateThread/CreateThread";
+import Threads from "./_components/Threads/Threads";
 
 export default function Home() {
-  // REACT QUERY FETCHING THREADS
-  const { data, isLoading } = useQuery({
-    queryKey: ["threads-cache"],
+  const { accessToken, user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+
+  // GET USER TO REDUX
+  const {} = useQuery({
+    queryKey: ["user"],
     queryFn: async () => {
-      const { data } = await axiosFetch.get("/threads?limit=25");
-      return data.threads;
+      const { data } = await axiosFetch.get("/user", {
+        headers: {
+          "x-access-token": accessToken,
+        },
+      });
+      dispatch(getUser(data.user));
+      return user;
     },
   });
 
   return (
-    <>
-      <Text px={4} mt={3} fontSize="2xl" fontWeight={600}>
-        Home
+    <Box overflowY="scroll" p={4}>
+      <Text as="h1" fontSize="4xl" px={4} color="accent" fontWeight={600}>
+        timeline
       </Text>
       <CreateThread />
-      <Box overflowY="scroll">
-        {isLoading && (
-          <Flex align="center" justify="center">
-            <Spinner />
-          </Flex>
-        )}
-        <Box>
-          {data &&
-            data.map((item: Thread) => (
-              <CircleTweet
-                key={item.id}
-                id={item.id}
-                content={item.content}
-                photo_profile={item.user?.photo_profile}
-                full_name={item.user?.full_name}
-                username={item.user?.username}
-                to={`/thread/${item.id}`}
-              />
-            ))}
-        </Box>
-      </Box>
-    </>
+      <Threads />
+    </Box>
   );
 }

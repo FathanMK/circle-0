@@ -12,11 +12,13 @@ import {
 } from "@chakra-ui/react";
 import { EyeIcon, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router-dom";
-import { FormEvent, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import useToast from "@/hooks/useToast";
 import { useMutation } from "@tanstack/react-query";
 import axiosFetch from "@/config/axiosFetch";
+import { useDispatch } from "react-redux";
+import { login } from "@/slices/user/userSlice";
 
 interface RegisterFormValues {
   full_name: string;
@@ -27,6 +29,7 @@ interface RegisterFormValues {
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     register,
@@ -35,13 +38,16 @@ export default function Register() {
     formState: { errors },
   } = useForm<RegisterFormValues>();
   const toast = useToast();
+  const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: (newUser: User) => {
       return axiosFetch.post("/register", newUser);
     },
     onSuccess: (data) => {
       toast("Success", data.data.message, "success");
+      dispatch(login(data.data.accessToken));
       reset();
+      navigate("/");
     },
     onError: (error) => toast("Error", error.message, "error"),
   });
@@ -51,6 +57,7 @@ export default function Register() {
   };
 
   const handleConfirmPassword = () => {
+    //@ts-ignore
     setShowPassword((prevState) => (prevState = !showPassword));
   };
 
