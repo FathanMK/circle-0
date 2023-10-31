@@ -22,7 +22,7 @@ export default function Layout() {
       <Timeline>
         <Outlet />
       </Timeline>
-      {/* <Sidebar /> */}
+      <Sidebar />
     </Grid>
   );
 }

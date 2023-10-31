@@ -1,78 +1,84 @@
-import { Flex, Avatar, Input, Box, Button } from "@chakra-ui/react";
-import { ImagePlus } from "lucide-react";
-import { ChangeEvent, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axiosFetch from "@/config/axiosFetch";
-import useToast from "@/hooks/useToast";
+import {
+  Flex,
+  Avatar,
+  Input,
+  Box,
+  Button,
+  Spinner,
+  Image,
+} from "@chakra-ui/react";
+import { ImagePlus, X } from "lucide-react";
+import useCreateReply from "./hooks/useCreateReply";
 
-interface ReplyMutation {
-  content?: string;
-  image?: string;
-  userId?: string;
-  threadId?: string;
-}
-
-export default function CreateReplies({
-  userId,
-  threadId,
+export default function CreateReply({
   photo_profile,
+  threadId,
 }: {
-  userId: string;
   threadId: string;
   photo_profile: string;
 }) {
-  const [reply, setReply] = useState("");
-  const queryClient = useQueryClient();
-  const toast = useToast();
-
-  const handleReplyThread = (e: ChangeEvent<HTMLInputElement>) => {
-    setReply(e.target.value);
-  };
-
-  const mutation = useMutation({
-    mutationFn: (newReply: ReplyMutation) =>
-      axiosFetch.post("/reply", newReply),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["reply"] }),
-    onError: (error: any) =>
-      toast("Error", error.response.data.message, "error"),
-  });
-
-  const handlePost = () => {
-    const newReply = {
-      content: reply,
-      userId,
-      threadId,
-    };
-    mutation.mutate(newReply);
-    setReply("");
-  };
+  const {
+    reply,
+    image,
+    setImage,
+    mutation,
+    handleReplyChange,
+    handlePost,
+    handleFileUpload,
+  } = useCreateReply(threadId!);
 
   return (
-    <Flex px={8} my={4} align="center">
-      <Avatar src={photo_profile} />
-      <Input
-        value={reply}
-        onChange={handleReplyThread}
-        border="none"
-        placeholder="What is happening!?"
-        _focusVisible={{ border: "none" }}
-      />
-      <Box as={Flex} align="center" gap={4}>
-        <Box cursor="pointer" color="#04a51e" _hover={{ color: "purple" }}>
-          <ImagePlus style={{ transition: "color 150ms ease-in-out" }} />
+    <Flex px={4} my={4} direction="column" gap={4}>
+      <Box as={Flex} align="center">
+        <Avatar src={photo_profile} />
+        <Input
+          value={reply}
+          onChange={handleReplyChange}
+          border="none"
+          placeholder="Type your reply!"
+          _focusVisible={{ border: "none" }}
+        />
+        <Box as={Flex} align="center" gap={4}>
+          <Box
+            as={Button}
+            bg="transparent"
+            cursor="pointer"
+            color="#04a51e"
+            _hover={{ color: "purple", bg: "transparent" }}
+            onClick={handleFileUpload}
+          >
+            <ImagePlus style={{ transition: "color 150ms ease-in-out" }} />
+          </Box>
+          <Button
+            isDisabled={reply === "" && image === null}
+            onClick={handlePost}
+            bg="accent"
+            mx={2}
+            color="white"
+            borderRadius="full"
+            _hover={{ bg: "purple" }}
+          >
+            {mutation.isPending ? <Spinner /> : "Post"}
+          </Button>
         </Box>
-        <Button
-          isDisabled={reply === ""}
-          onClick={handlePost}
-          bg="accent"
-          mx={2}
-          color="white"
-          borderRadius="full"
-          _hover={{ bg: "purple" }}
-        >
-          Post
-        </Button>
       </Box>
+      {image && (
+        <Box as={Flex} align="center" justify="center">
+          <Box w="fit-content" position="relative">
+            <Button
+              bg="transparent"
+              _hover={{ bg: "transparent" }}
+              position="absolute"
+              top={0}
+              right={0}
+              onClick={() => setImage(null)}
+            >
+              <X color="white" />
+            </Button>
+            <Image src={URL.createObjectURL(image)} />
+          </Box>
+        </Box>
+      )}
     </Flex>
   );
 }

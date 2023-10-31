@@ -1,26 +1,15 @@
 import { MouseEvent } from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { Pencil, Trash } from "lucide-react";
+import useOptions from "./hooks/useOptions";
+import EditModal from "./_component/EditModal/EditModal";
 
 export default function Options({ threadId }: { threadId: string }) {
-  // const toast = useToast();
-  // const queryClient = useQueryClient();
-  // const mutation = useMutation({
-  //   mutationFn: () => {
-  //     return axiosFetch.delete(`/thread/${id}`);
-  //   },
-  //   onSuccess: (data) => {
-  //     toast("Success", data.data.message, "success");
-  //     queryClient.invalidateQueries({ queryKey: ["threads-cache"] });
-  //   },
-  //   onError: () => {
-  //     toast("Error", "Failed to delete thread", "error");
-  //   },
-  // });
+  const { handleDeleteThread, onClose, onOpen, isOpen } = useOptions(threadId);
 
-  const handleDeleteThread = (e: MouseEvent<HTMLButtonElement>) => {
-    // e.stopPropagation();
-    // mutation.mutate();
+  const handleEditThread = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onOpen();
   };
 
   return (
@@ -30,7 +19,8 @@ export default function Options({ threadId }: { threadId: string }) {
         gap={2}
         color="teal"
         bg="transparent"
-        _hover={{ bg: "transparent" }}
+        _hover={{ bg: "transparent", color: "purple" }}
+        onClick={handleEditThread}
       >
         <Pencil />
         <Text>Edit</Text>
@@ -40,12 +30,13 @@ export default function Options({ threadId }: { threadId: string }) {
         gap={2}
         color="red"
         bg="transparent"
-        _hover={{ bg: "transparent" }}
+        _hover={{ bg: "transparent", color: "purple" }}
         onClick={handleDeleteThread}
       >
         <Trash />
         <Text>Delete</Text>
       </Button>
+      <EditModal isOpen={isOpen} onClose={onClose} threadId={threadId} />
     </>
   );
 }

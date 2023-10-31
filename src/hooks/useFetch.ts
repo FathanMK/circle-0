@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosFetch from "@/config/axiosFetch";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function useFetch({
   queryKey,
@@ -8,13 +10,18 @@ export default function useFetch({
   queryKey: string;
   fetchRoutes: string;
 }) {
-  const { data, isLoading } = useQuery({
+  const { accessToken } = useSelector((state: RootState) => state.user);
+  const { data, isLoading, refetch } = useQuery({
     queryKey: [queryKey],
     queryFn: async () => {
-      const { data } = await axiosFetch.get(fetchRoutes);
+      const { data } = await axiosFetch.get(fetchRoutes, {
+        headers: {
+          "x-access-token": accessToken,
+        },
+      });
       return data;
     },
   });
 
-  return { data, isLoading };
+  return { data, isLoading, refetch };
 }

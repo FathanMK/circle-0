@@ -5,7 +5,13 @@ import { Provider } from "react-redux";
 import { persistor, store } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+    },
+  },
+});
 const chakraTheme = extendTheme({
   colors: {
     newBg: "#1d1d1d",

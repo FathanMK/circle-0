@@ -20,13 +20,18 @@ export default function Routes() {
     <BrowserRouter>
       <RouterRoutes>
         <Route element={accessToken ? <Layout /> : <Navigate to="/login" />}>
-          {/* <Route element={<Main />}> */}
           <Route index element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/thread/:id" element={<Thread />} />
         </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={accessToken ? <Navigate to="/" /> : <Login />}
+        />
+        <Route
+          path="/register"
+          element={accessToken ? <Navigate to="/" /> : <Register />}
+        />
       </RouterRoutes>
     </BrowserRouter>
   );

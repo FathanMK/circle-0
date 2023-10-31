@@ -8,7 +8,6 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { ImagePlus, X } from "lucide-react";
-
 import useCreateThread from "./hooks/useCreateThread";
 
 export default function CreateThread() {

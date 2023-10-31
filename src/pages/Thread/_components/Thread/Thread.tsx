@@ -84,7 +84,11 @@ function ThreadBottom({
 }) {
   return (
     <Box as={Flex} gap={4}>
-      <LikeButton isLiked={isLiked} totalLikes={totalLikes} />
+      <LikeButton
+        threadId={threadId}
+        isLiked={isLiked}
+        totalLikes={totalLikes}
+      />
       <ReplyButton threadId={threadId} totalReplies={totalReplies} />
     </Box>
   );

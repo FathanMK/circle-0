@@ -14,8 +14,7 @@ function ReplyContainer({
   return (
     <Box
       as={Flex}
-      py={4}
-      px={8}
+      p={4}
       gap={4}
       borderBottom="1px solid hsl(0 100% 100% / 20%)"
     >
@@ -73,13 +72,14 @@ function ReplyBody({ content, image }: { content: string; image: string }) {
 export default function Replies({ threadId }: { threadId: string }) {
   const { data } = useFetchWithId({
     id: threadId,
-    queryKey: "reply",
-    fetchRoute: "/reply",
+    queryKey: "replies",
+    fetchRoute: "/replies",
   });
   const replies = data?.replies;
   return (
     <>
       {replies?.map((item: Reply) => {
+        console.log(item);
         return (
           <ReplyContainer
             key={item.id}

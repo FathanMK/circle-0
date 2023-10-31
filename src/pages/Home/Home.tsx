@@ -4,16 +4,16 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { RootState } from "@/store";
 import axiosFetch from "@/config/axiosFetch";
-import { getUser } from "@/slices/user/userSlice";
+import { getUser, logout } from "@/slices/user/userSlice";
 import CreateThread from "./_components/CreateThread/CreateThread";
 import Threads from "./_components/Threads/Threads";
 
 export default function Home() {
-  const { accessToken, user } = useSelector((state: RootState) => state.user);
+  const { accessToken } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   // GET USER TO REDUX
-  const {} = useQuery({
+  const { isError } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
       const { data } = await axiosFetch.get("/user", {
@@ -22,9 +22,11 @@ export default function Home() {
         },
       });
       dispatch(getUser(data.user));
-      return user;
+      return data;
     },
   });
+
+  if (isError) dispatch(logout());
 
   return (
     <Box overflowY="scroll" p={4}>

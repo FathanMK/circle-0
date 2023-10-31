@@ -1,14 +1,17 @@
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { Heart } from "lucide-react";
+import useLikeButton from "./hooks/useLikeButton";
 
 export default function LikeButton({
   isLiked,
   totalLikes,
+  threadId,
 }: {
-  isLiked: Boolean;
+  isLiked: boolean;
   totalLikes: number;
+  threadId: string;
 }) {
-  const handleLike = () => {};
+  const { handleLike } = useLikeButton({ isLiked, threadId });
   return (
     <Button
       as={Flex}
