@@ -6,8 +6,11 @@ import type { IThreadContainerProps, IThreadHeaderProps } from "./interface";
 import MoreOptions from "./_components/MoreOptions/MoreOptions";
 import ReplyButton from "./_components/ReplyButton/ReplyButton";
 import LikeButton from "./_components/LikeButton/LikeButton";
-import useFetch from "@/hooks/useFetch";
 import { RootState } from "@/store";
+import { useQuery } from "@tanstack/react-query";
+import axiosFetch from "@/config/axiosFetch";
+import { useDispatch } from "react-redux";
+import { getThreads } from "@/slices/thread/threadSlice";
 
 function ThreadContainer({
   to,
@@ -35,6 +38,7 @@ function ThreadHeader({
   username,
   created_at,
   threadId,
+  isUser,
 }: IThreadHeaderProps) {
   return (
     <Box as={Flex} gap={2} align="center">
@@ -52,7 +56,7 @@ function ThreadHeader({
         <Text>•</Text>
         <Text>{getPostedTime(created_at as string)}</Text>
       </Box>
-      <MoreOptions threadId={threadId} />
+      {isUser && <MoreOptions threadId={threadId} />}
     </Box>
   );
 }
@@ -100,13 +104,23 @@ function ThreadBottom({
 }
 
 export default function Threads() {
-  const { user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const { user, accessToken } = useSelector((state: RootState) => state.user);
+  const { threads } = useSelector((state: RootState) => state.thread);
   const userId = user?.id;
-  const { data, isLoading } = useFetch({
-    queryKey: "threads",
-    fetchRoutes: "/threads?limit=25",
+  const { isLoading } = useQuery({
+    queryKey: ["threads"],
+    queryFn: async () => {
+      const { data } = await axiosFetch.get("/threads?limit=25", {
+        headers: {
+          "x-access-token": accessToken,
+        },
+      });
+      dispatch(getThreads(data.threads));
+      return data.threads;
+    },
   });
-  const threads = data?.threads;
+
   if (isLoading)
     return (
       <Flex h="60vh" align="center" justify="center">
@@ -130,6 +144,7 @@ export default function Threads() {
           const isLiked = item.likes?.some(
             (like: any) => like.user?.id === userId
           );
+          const isUser = item.user?.id === userId;
           const totalLikes = item.likes?.length;
           const totalReplies = item.replies?.length;
           return (
@@ -143,6 +158,7 @@ export default function Threads() {
                 username={item.user?.username!}
                 full_name={item.user?.full_name!}
                 created_at={item.created_at!}
+                isUser={isUser}
               />
               <ThreadBody content={item.content!} image={item.image!} />
               <ThreadBottom

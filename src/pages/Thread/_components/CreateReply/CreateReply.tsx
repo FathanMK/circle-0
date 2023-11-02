@@ -28,7 +28,12 @@ export default function CreateReply({
   } = useCreateReply(threadId!);
 
   return (
-    <Flex px={4} my={4} direction="column" gap={4}>
+    <Flex
+      p={4}
+      my={4}
+      direction="column"
+      gap={4}
+    >
       <Box as={Flex} align="center">
         <Avatar src={photo_profile} />
         <Input

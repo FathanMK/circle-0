@@ -31,12 +31,14 @@ import useToast from "@/hooks/useToast";
 interface IEditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  replyId: string;
   threadId: string;
 }
 
 export default function EditModal({
   isOpen,
   onClose,
+  replyId,
   threadId,
 }: IEditModalProps) {
   const toast = useToast();
@@ -45,27 +47,27 @@ export default function EditModal({
   const [image, setImage] = useState<string | File | null>("");
   const [isLoading, setLoading] = useState(false);
   const { accessToken } = useSelector((state: RootState) => state.user);
-  const { data: threadData } = useFetchWithId({
-    queryKey: "thread",
-    id: threadId,
-    fetchRoute: "/thread",
+  const { data: replyData } = useFetchWithId({
+    queryKey: "reply",
+    id: replyId,
+    fetchRoute: "/reply",
   });
   const form = new FormData();
 
   const mutation = useMutation({
-    mutationFn: (editedThread: any) => {
-      return axiosFetch.put(`/thread/${threadId}`, editedThread, {
+    mutationFn: (editedReply: any) => {
+      return axiosFetch.put(`/reply/${replyId}`, editedReply, {
         headers: {
           "x-access-token": accessToken,
         },
       });
     },
     onSuccess: () => {
-      toast("Please Wait", "Editing Thread!", "info");
+      toast("Please Wait", "Editing Reply!", "info");
       setLoading(true);
       setTimeout(() => {
-        toast("Success", "Thread is successfully updated!", "success");
-        queryClient.invalidateQueries({ queryKey: ["threads"] });
+        toast("Success", "Reply is successfully updated!", "success");
+        queryClient.invalidateQueries({ queryKey: ["replies", threadId] });
         onClose();
         setLoading(false);
       }, 3000);
@@ -76,10 +78,10 @@ export default function EditModal({
   });
 
   useEffect(() => {
-    const thread = threadData?.thread;
-    setContent(thread?.content);
-    setImage(thread?.image);
-  }, [threadData]);
+    const reply = replyData?.reply;
+    setContent(reply?.content);
+    setImage(reply?.image);
+  }, [replyData]);
 
   const handleOnChangeContent = (e: ChangeEvent<HTMLInputElement>) => {
     setContent(e.target.value);
@@ -88,7 +90,7 @@ export default function EditModal({
   const handleEditThread = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (content === "" && image === "") {
-      toast("Error", "Thread cannot be empty!", "error");
+      toast("Error", "Reply cannot be empty!", "error");
       return;
     }
     //@ts-ignore
@@ -126,7 +128,7 @@ export default function EditModal({
         maxH="500px"
         overflowY="scroll"
       >
-        <ModalHeader color="accent">edit thread</ModalHeader>
+        <ModalHeader color="accent">edit reply</ModalHeader>
         <ModalCloseButton color="accent" />
         <ModalBody>
           <Box as={Flex} direction="column" gap={4}>

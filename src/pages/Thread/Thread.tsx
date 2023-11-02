@@ -10,7 +10,7 @@ import CreateReply from "./_components/CreateReply/CreateReply";
 export default function Thread() {
   const { user } = useSelector((state: RootState) => state.user);
   const userId = user?.id;
-  const { id: threadId } = useParams();
+  const { threadId } = useParams();
   const navigate = useNavigate();
 
   return (
@@ -30,7 +30,7 @@ export default function Thread() {
         </Text>
       </Box>
       <Box as={Flex} direction="column" overflow="hidden" gap={4} px={4}>
-        <Box overflowY="scroll">
+        <Box overflowY="scroll" pb={20}>
           <MainThread userId={userId!} threadId={threadId!} />
           <CreateReply
             threadId={threadId!}

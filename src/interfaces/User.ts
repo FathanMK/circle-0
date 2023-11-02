@@ -5,5 +5,8 @@ interface User {
   email?: string;
   password?: string;
   photo_profile?: string;
+  banner_profile?: string;
   bio?: string;
+  followers?: any;
+  following?: any;
 }

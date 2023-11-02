@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import { MouseEvent, useState } from "react";
 import { useDisclosure } from "@chakra-ui/react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useToast from "@/hooks/useToast";
@@ -9,6 +9,7 @@ import { RootState } from "@/store";
 export default function useOptions(threadId: string) {
   const toast = useToast();
   const queryClient = useQueryClient();
+  const [isLoading, setLoading] = useState(false);
   const { accessToken } = useSelector((state: RootState) => state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const mutation = useMutation({
@@ -20,8 +21,15 @@ export default function useOptions(threadId: string) {
       });
     },
     onSuccess: () => {
-      toast("Success", "Thread is successfully deleted!", "success");
-      queryClient.invalidateQueries({ queryKey: ["threads"] });
+      toast("Please Wait", "Deleting!", "info");
+      setLoading(true)
+      setTimeout(() => {
+        toast("Success", "Thread is successfully deleted!", "success");
+        queryClient.invalidateQueries({ queryKey: ["threads"] });
+        queryClient.invalidateQueries({ queryKey: ["threads"] });
+        onClose();
+        setLoading(false)
+      }, 3000);
     },
     onError: () => {
       toast("Error", "Failed to delete thread!", "error");
@@ -33,5 +41,5 @@ export default function useOptions(threadId: string) {
     mutation.mutate();
   };
 
-  return { isOpen, onClose, onOpen, handleDeleteThread };
+  return { isOpen, onClose, onOpen, isLoading, handleDeleteThread };
 }

@@ -12,4 +12,5 @@ export interface IThreadHeaderProps {
   username: string;
   created_at: string;
   threadId: string;
+  isUser: boolean;
 }

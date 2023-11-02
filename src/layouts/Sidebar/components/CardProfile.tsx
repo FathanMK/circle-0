@@ -18,7 +18,7 @@ export default function CardProfile() {
       <Box pos="relative">
         <Image
           borderRadius="lg"
-          src="https://source.unsplash.com/random"
+          src={user?.banner_profile}
           h="100px"
           w="full"
           objectFit="cover"
@@ -48,16 +48,14 @@ export default function CardProfile() {
         <Text color="whiteAlpha.600">@{user?.username}</Text>
         <Text>{user?.bio}</Text>
         <Flex align="center" gap={4}>
-          {/* TODO FOLLOWING BY LENGTH OR MAKE SERVICE */}
           <Text fontWeight={600}>
-            291{" "}
+            {user?.following?.length}{" "}
             <Text as="span" color="whiteAlpha.600">
               Following
             </Text>
           </Text>
-          {/* TODO FOLLOWERS BY LENGTH OR MAKE SERVICE */}
           <Text fontWeight={600}>
-            23{" "}
+            {user?.followers?.length}{" "}
             <Text as="span" color="whiteAlpha.600">
               Followers
             </Text>

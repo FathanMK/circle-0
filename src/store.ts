@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import UserReducer from "@/slices/user/userSlice";
+import ThreadReducer from "@/slices/thread/threadSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -10,6 +11,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: UserReducer,
+  thread: ThreadReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

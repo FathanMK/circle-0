@@ -1,4 +1,4 @@
-import { Button, Flex, Grid, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, Text, useDisclosure } from "@chakra-ui/react";
 import { Heart, Home, Search, UserCircle2 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -29,31 +29,42 @@ export default function Navbar() {
             circle
           </Text>
           <Flex direction="column" align="flex-start" gap={4}>
-            <NavLink className={currentUrl === "/" ? "active-link" : ""} to="/">
+            <Box
+              as={NavLink}
+              className={currentUrl === "/" ? "active-link" : ""}
+              to="/"
+              w="full"
+            >
               <Home />
               <Text>Home</Text>
-            </NavLink>
-            <NavLink
+            </Box>
+            <Box
+              as={NavLink}
               className={currentUrl.includes("search") ? "active-link" : ""}
               to="/search"
+              w="full"
             >
               <Search />
               <Text>Search</Text>
-            </NavLink>
-            <NavLink
+            </Box>
+            <Box
+              as={NavLink}
               className={currentUrl.includes("follows") ? "active-link" : ""}
-              to="/follows"
+              to={`/follows/${user?.id}`}
+              w="full"
             >
               <Heart />
               <Text>Follows</Text>
-            </NavLink>
-            <NavLink
-              className={currentUrl.includes("follows") ? "active-link" : ""}
+            </Box>
+            <Box
+              as={NavLink}
+              className={currentUrl.includes("profile") ? "active-link" : ""}
               to="/profile"
+              w="full"
             >
               <UserCircle2 />
               <Text>Profile</Text>
-            </NavLink>
+            </Box>
           </Flex>
           <Button
             bg="accent"

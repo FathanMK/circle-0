@@ -5,7 +5,8 @@ import useOptions from "./hooks/useOptions";
 import EditModal from "./_component/EditModal/EditModal";
 
 export default function Options({ threadId }: { threadId: string }) {
-  const { handleDeleteThread, onClose, onOpen, isOpen } = useOptions(threadId);
+  const { handleDeleteThread, onClose, onOpen, isOpen, isLoading } =
+    useOptions(threadId);
 
   const handleEditThread = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -17,20 +18,21 @@ export default function Options({ threadId }: { threadId: string }) {
       <Button
         as={Flex}
         gap={2}
-        color="teal"
+        color="white"
         bg="transparent"
-        _hover={{ bg: "transparent", color: "purple" }}
+        _hover={{ bg: "transparent", color: "blue" }}
         onClick={handleEditThread}
       >
         <Pencil />
         <Text>Edit</Text>
       </Button>
       <Button
+        isDisabled={isLoading}
         as={Flex}
         gap={2}
-        color="red"
         bg="transparent"
-        _hover={{ bg: "transparent", color: "purple" }}
+        color="white"
+        _hover={{ bg: "transparent", color: "red" }}
         onClick={handleDeleteThread}
       >
         <Trash />

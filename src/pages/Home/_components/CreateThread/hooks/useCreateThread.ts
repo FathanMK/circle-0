@@ -21,10 +21,12 @@ export default function useCreateThread() {
         },
       }),
     onSuccess: () => {
-      toast("Success", "Thread created", "success");
-      queryClient.invalidateQueries({
-        queryKey: ["threads"],
-      });
+      toast("Please Wait", "Creating Thread!", "info");
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["threads"] });
+        queryClient.invalidateQueries({ queryKey: ["threads"] });
+        toast("Success", "Thread created", "success");
+      }, 3000);
     },
     onError: (error: any) =>
       toast("Error", error.response.data.message, "error"),

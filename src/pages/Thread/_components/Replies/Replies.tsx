@@ -3,6 +3,8 @@ import { ReactNode } from "react";
 import getPostedTime from "@/utils/getPostedTime";
 import MoreOptions from "./_components/MoreOptions/MoreOptions";
 import useFetchWithId from "@/hooks/useFetchWithId";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 function ReplyContainer({
   children,
@@ -12,12 +14,7 @@ function ReplyContainer({
   photo_profile: string;
 }) {
   return (
-    <Box
-      as={Flex}
-      p={4}
-      gap={4}
-      borderBottom="1px solid hsl(0 100% 100% / 20%)"
-    >
+    <Box as={Flex} p={4} gap={4}>
       <Avatar src={photo_profile} />
       <Box w="full">{children}</Box>
     </Box>
@@ -29,11 +26,15 @@ function ReplyHeader({
   username,
   created_at,
   replyId,
+  threadId,
+  isUser,
 }: {
   full_name: string;
   username: string;
   created_at: string;
   replyId: string;
+  threadId: string;
+  isUser: boolean;
 }) {
   return (
     <Box as={Flex} gap={2} align="center">
@@ -51,7 +52,7 @@ function ReplyHeader({
         <Text>•</Text>
         <Text>{getPostedTime(created_at)}</Text>
       </Box>
-      <MoreOptions replyId={replyId} />
+      {isUser && <MoreOptions threadId={threadId} replyId={replyId} />}
     </Box>
   );
 }
@@ -70,6 +71,8 @@ function ReplyBody({ content, image }: { content: string; image: string }) {
 }
 
 export default function Replies({ threadId }: { threadId: string }) {
+  const { user } = useSelector((state: RootState) => state.user);
+  const userId = user?.id;
   const { data } = useFetchWithId({
     id: threadId,
     queryKey: "replies",
@@ -79,7 +82,7 @@ export default function Replies({ threadId }: { threadId: string }) {
   return (
     <>
       {replies?.map((item: Reply) => {
-        console.log(item);
+        const isUser = item.user?.id === userId;
         return (
           <ReplyContainer
             key={item.id}
@@ -90,6 +93,8 @@ export default function Replies({ threadId }: { threadId: string }) {
               username={item.user?.username!}
               created_at={item.created_at!}
               replyId={item.id!}
+              threadId={threadId!}
+              isUser={isUser}
             />
             <ReplyBody content={item.content!} image={item.image!} />
           </ReplyContainer>

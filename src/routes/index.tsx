@@ -13,6 +13,7 @@ import Login from "@/pages/Login/Login";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import Layout from "@/layouts";
+import Follows from "@/pages/Follows/Follows";
 
 export default function Routes() {
   const { accessToken } = useSelector((state: RootState) => state.user);
@@ -22,7 +23,8 @@ export default function Routes() {
         <Route element={accessToken ? <Layout /> : <Navigate to="/login" />}>
           <Route index element={<Home />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/thread/:id" element={<Thread />} />
+          <Route path="/thread/:threadId" element={<Thread />} />
+          <Route path="/follows/:userId" element={<Follows />} />
         </Route>
         <Route
           path="/login"

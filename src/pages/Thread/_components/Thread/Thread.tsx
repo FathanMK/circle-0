@@ -5,6 +5,8 @@ import getPostedTime from "@/utils/getPostedTime";
 import MoreOptions from "@/pages/Home/_components/Threads/_components/MoreOptions/MoreOptions";
 import LikeButton from "@/pages/Home/_components/Threads/_components/LikeButton/LikeButton";
 import ReplyButton from "@/pages/Home/_components/Threads/_components/ReplyButton/ReplyButton";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 function ThreadContainer({
   photo_profile,
@@ -14,13 +16,7 @@ function ThreadContainer({
   children: ReactNode;
 }) {
   return (
-    <Box
-      as={Flex}
-      p={4}
-      gap={4}
-      cursor="pointer"
-      borderBottom="1px solid hsl(0 100% 100% / 20%)"
-    >
+    <Box as={Flex} p={4} gap={4} cursor="pointer">
       <Avatar src={photo_profile} />
       <Box w="full">{children}</Box>
     </Box>
@@ -31,11 +27,13 @@ function ThreadHeader({
   username,
   created_at,
   threadId,
+  isUser,
 }: {
   full_name: string;
   username: string;
   created_at: string;
   threadId: string;
+  isUser: boolean;
 }) {
   return (
     <Box as={Flex} gap={2} align="center">
@@ -53,7 +51,7 @@ function ThreadHeader({
         <Text>•</Text>
         <Text>{getPostedTime(created_at)}</Text>
       </Box>
-      <MoreOptions threadId={threadId} />
+      {isUser && <MoreOptions threadId={threadId} />}
     </Box>
   );
 }
@@ -110,10 +108,10 @@ export default function Thread({
   if (isLoadingThreadData) return <Spinner />;
 
   const thread = threadData?.thread;
-
   const isLiked = thread.likes?.some((like: any) => like.user?.id === userId);
   const totalLikes = thread.likes?.length;
   const totalReplies = thread.replies?.length;
+  const isUser = thread.user?.id === userId;
 
   return (
     <ThreadContainer photo_profile={thread.user?.photo_profile!}>
@@ -122,6 +120,7 @@ export default function Thread({
         username={thread.user?.username!}
         full_name={thread.user?.full_name!}
         created_at={thread.created_at!}
+        isUser={isUser}
       />
       <ThreadBody content={thread.content!} image={thread.image!} />
       <ThreadBottom

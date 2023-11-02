@@ -12,7 +12,13 @@ import {
 import { MoreVertical } from "lucide-react";
 import Options from "./_component/Options";
 
-export default function MoreOptions({ replyId }: { replyId: string }) {
+export default function MoreOptions({
+  replyId,
+  threadId,
+}: {
+  replyId: string;
+  threadId: string;
+}) {
   const [isMoreOptionOpen, setMoreOptionOpen] = useState(false);
   const { refs, floatingStyles, context } = useFloating({
     whileElementsMounted: autoUpdate,
@@ -67,7 +73,7 @@ export default function MoreOptions({ replyId }: { replyId: string }) {
             style={floatingStyles}
             {...getFloatingProps()}
           >
-            <Options replyId={replyId} />
+            <Options replyId={replyId} threadId={threadId} />
           </Box>
         </FloatingOverlay>
       )}
