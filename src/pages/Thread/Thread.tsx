@@ -25,7 +25,7 @@ export default function Thread() {
         >
           <ArrowLeft size={30} />
         </Button>
-        <Text as="h1" fontSize="4xl" px={4} color="accent" fontWeight={600}>
+        <Text as="h1" fontSize="4xl" px={4} color="accent" fontWeight={700}>
           thread
         </Text>
       </Box>

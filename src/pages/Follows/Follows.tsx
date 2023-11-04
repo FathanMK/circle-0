@@ -1,6 +1,5 @@
 import {
   Text,
-  Box,
   Tabs,
   TabList,
   Tab,
@@ -8,11 +7,12 @@ import {
   TabPanel,
 } from "@chakra-ui/react";
 import Following from "./_component/Following";
+import Followers from "./_component/Followers";
 
 export default function Follows() {
   return (
     <>
-      <Text as="h1" fontSize="4xl" p={4} px={8} color="accent" fontWeight={600}>
+      <Text as="h1" fontSize="4xl" p={4} px={8} color="accent" fontWeight={700}>
         follows
       </Text>
       <Tabs
@@ -43,7 +43,7 @@ export default function Follows() {
             <Following />
           </TabPanel>
           <TabPanel>
-            <Text>Followers</Text>
+            <Followers />
           </TabPanel>
         </TabPanels>
       </Tabs>

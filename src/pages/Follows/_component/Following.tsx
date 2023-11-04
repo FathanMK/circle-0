@@ -10,10 +10,12 @@ export default function Following() {
       {user?.following.map((item: any) => (
         <Profile
           key={item.following.id}
+          followingId={item.following.id}
           username={item.following.username}
           full_name={item.following.full_name}
           bio={item.following.bio}
           photo_profile={item.following.photo_profile}
+          isFollowed
         />
       ))}
     </Box>

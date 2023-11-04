@@ -1,6 +1,7 @@
 import { Card, Flex, Text, Box, Image, Avatar, Button } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { NavLink } from "react-router-dom";
 
 export default function CardProfile() {
   const { user } = useSelector((state: RootState) => state.user);
@@ -14,15 +15,24 @@ export default function CardProfile() {
       bg="lighterNewBg"
       color="white"
     >
-      <Text fontWeight={600}>My Profile</Text>
       <Box pos="relative">
-        <Image
-          borderRadius="lg"
-          src={user?.banner_profile}
-          h="100px"
-          w="full"
-          objectFit="cover"
-        />
+        {user?.banner_profile ? (
+          <Image
+            borderRadius="lg"
+            src={user?.banner_profile}
+            h="100px"
+            w="full"
+            objectFit="cover"
+          />
+        ) : (
+          <Box
+            borderRadius="lg"
+            bg="teal"
+            h="100px"
+            w="full"
+            objectFit="cover"
+          />
+        )}
         <Avatar
           size="lg"
           pos="absolute"
@@ -32,12 +42,16 @@ export default function CardProfile() {
         />
       </Box>
       <Button
+        as={NavLink}
+        to={`/editProfile/${user?.id}`}
         ml="auto"
         borderRadius="full"
         bg="transparent"
         border="1px solid white"
         color="white"
         mt={2}
+        _hover={{ color: "teal", borderColor: "teal" }}
+        _active={{ bg: "none" }}
       >
         Edit Profile
       </Button>

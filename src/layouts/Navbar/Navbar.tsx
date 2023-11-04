@@ -25,7 +25,7 @@ export default function Navbar() {
         borderRight="1px solid hsl(0 100% 100% / 15%)"
       >
         <Flex direction="column" gap={4} px={2}>
-          <Text as="h1" fontSize="4xl" px={4} color="accent" fontWeight={600}>
+          <Text as="h1" fontSize="4xl" px={4} color="accent" fontWeight={700}>
             circle
           </Text>
           <Flex direction="column" align="flex-start" gap={4}>
@@ -58,8 +58,13 @@ export default function Navbar() {
             </Box>
             <Box
               as={NavLink}
-              className={currentUrl.includes("profile") ? "active-link" : ""}
-              to="/profile"
+              className={
+                currentUrl.includes("profile") ||
+                currentUrl.includes("editProfile")
+                  ? "active-link"
+                  : ""
+              }
+              to={`/profile/${user?.id}`}
               w="full"
             >
               <UserCircle2 />

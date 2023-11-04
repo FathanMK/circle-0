@@ -105,7 +105,6 @@ export default function CardSuggested() {
       bg="lighterNewBg"
       color="white"
     >
-      <Text fontWeight={600}>Suggested For You</Text>
       <Box overflowY="scroll">
         <Flex direction="column" grow={0} shrink={0} gap={4}>
           <Flex direction="column" gap={4}>

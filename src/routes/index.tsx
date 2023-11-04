@@ -4,16 +4,18 @@ import {
   Route,
   Routes as RouterRoutes,
 } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import Home from "@/pages/Home/Home";
 import Search from "@/pages/Search/Search";
 import Thread from "@/pages/Thread/Thread";
 import Register from "@/pages/Register/Register";
 import Login from "@/pages/Login/Login";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import Layout from "@/layouts";
+import Profile from "@/pages/Profile/Profile";
 import Follows from "@/pages/Follows/Follows";
+import EditProfile from "@/pages/EditProfile/EditProfile";
+import Layout from "@/layouts";
+import { RootState } from "@/store";
 
 export default function Routes() {
   const { accessToken } = useSelector((state: RootState) => state.user);
@@ -25,6 +27,8 @@ export default function Routes() {
           <Route path="/search" element={<Search />} />
           <Route path="/thread/:threadId" element={<Thread />} />
           <Route path="/follows/:userId" element={<Follows />} />
+          <Route path="/profile/:userId" element={<Profile />} />
+          <Route path="/editProfile/:userId" element={<EditProfile />} />
         </Route>
         <Route
           path="/login"

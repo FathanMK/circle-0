@@ -23,9 +23,9 @@ export default function useCreateThread() {
     onSuccess: () => {
       toast("Please Wait", "Creating Thread!", "info");
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ["threads"] });
-        queryClient.invalidateQueries({ queryKey: ["threads"] });
-        
+        queryClient.invalidateQueries({ queryKey: ["threadsBy", user?.id] });
+        queryClient.invalidateQueries({ queryKey: ["threadsBy", user?.id] });
+        toast("Success", "Successfully created!", "success");
       }, 3000);
     },
     onError: (error: any) =>
@@ -50,7 +50,7 @@ export default function useCreateThread() {
       setImage(file);
     }
   };
-  
+
   const handleFileUpload = () => {
     const input = document.createElement("input");
     input.type = "file";

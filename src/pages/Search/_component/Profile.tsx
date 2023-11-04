@@ -1,9 +1,9 @@
 import { Box, Flex, Avatar, Text, Button } from "@chakra-ui/react";
 import useToast from "@/hooks/useToast";
-import { useSelector } from "react-redux";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 import axiosFetch from "@/config/axiosFetch";
+import { RootState } from "@/store";
 
 interface IProfileProps {
   followingId: string;
@@ -12,6 +12,7 @@ interface IProfileProps {
   username: string;
   bio: string;
   isFollowed?: boolean;
+  isUser?: boolean;
 }
 
 export default function Profile({
@@ -21,6 +22,7 @@ export default function Profile({
   photo_profile,
   isFollowed,
   followingId,
+  isUser,
 }: IProfileProps) {
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -70,22 +72,41 @@ export default function Profile({
         <Text noOfLines={1}>{bio}</Text>
       </Box>
       <Box ml="auto">
-        <Button
-          size="sm"
-          ml="auto"
-          mr={3}
-          variant="outline"
-          color="white"
-          borderRadius="full"
-          _hover={{
-            color: isFollowed ? "red" : "green",
-            borderColor: isFollowed ? "red" : "green",
-          }}
-          _active={{ bg: "none" }}
-          onClick={() => handleFollow(followingId)}
-        >
-          {isFollowed ? "Unfollow" : "Follow"}
-        </Button>
+        {isUser ? (
+          <Button
+            size="sm"
+            ml="auto"
+            mr={3}
+            variant="outline"
+            color="white"
+            borderRadius="full"
+            _hover={{
+              color: "teal",
+              borderColor: "teal",
+            }}
+            _active={{ bg: "none" }}
+            onClick={() => handleFollow(followingId)}
+          >
+            Profile
+          </Button>
+        ) : (
+          <Button
+            size="sm"
+            ml="auto"
+            mr={3}
+            variant="outline"
+            color="white"
+            borderRadius="full"
+            _hover={{
+              color: isFollowed ? "red" : "green",
+              borderColor: isFollowed ? "red" : "green",
+            }}
+            _active={{ bg: "none" }}
+            onClick={() => handleFollow(followingId)}
+          >
+            {isFollowed ? "Unfollow" : "Follow"}
+          </Button>
+        )}
       </Box>
     </Box>
   );

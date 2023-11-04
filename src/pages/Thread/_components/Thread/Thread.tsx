@@ -2,11 +2,11 @@ import { Box, Flex, Avatar, Text, Image, Spinner } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import useFetchWithId from "@/hooks/useFetchWithId";
 import getPostedTime from "@/utils/getPostedTime";
-import MoreOptions from "@/pages/Home/_components/Threads/_components/MoreOptions/MoreOptions";
+import MoreOptions from "./_component/MoreOptions/MoreOptions";
 import LikeButton from "@/pages/Home/_components/Threads/_components/LikeButton/LikeButton";
 import ReplyButton from "@/pages/Home/_components/Threads/_components/ReplyButton/ReplyButton";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useNavigate } from "react-router-dom";
+import useToast from "@/hooks/useToast";
 
 function ThreadContainer({
   photo_profile,
@@ -99,15 +99,26 @@ export default function Thread({
   threadId: string;
   userId: string;
 }) {
+  const navigate = useNavigate();
+  const toast = useToast();
   const { data: threadData, isLoading: isLoadingThreadData } = useFetchWithId({
     queryKey: "thread",
     id: threadId,
     fetchRoute: "/thread",
   });
 
-  if (isLoadingThreadData) return <Spinner />;
+  if (isLoadingThreadData)
+    return (
+      <Flex h="30vh" align="center" justify="center">
+        <Spinner size="lg" />
+      </Flex>
+    );
 
   const thread = threadData?.thread;
+  if (thread === undefined) {
+    toast("Error", "Thread not found", "error");
+    return navigate("/");
+  }
   const isLiked = thread.likes?.some((like: any) => like.user?.id === userId);
   const totalLikes = thread.likes?.length;
   const totalReplies = thread.replies?.length;
