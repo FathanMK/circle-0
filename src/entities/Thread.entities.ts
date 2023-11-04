@@ -28,7 +28,10 @@ export class Thread {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.threads, { onDelete: "CASCADE" })
+  @ManyToOne(() => User, (user) => user.threads, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   user: User;
 
   @OneToMany(() => Reply, (reply) => reply.thread)

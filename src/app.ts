@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
-import AppDataSource from "./config/data-source";
+import amqp from "amqplib";
 
+import AppDataSource from "./config/data-source";
 import { ReplyRoutes, ThreadRoutes, UserRoutes } from "./routes";
 import likeRoutes from "./routes/_Like";
 import followingRoutes from "./routes/_Following";
+import ThreadWorker from "./workers/Thread.worker";
 
-// TODO: INTERFACE
+import "dotenv/config";
+import notificationRoutes from "./routes/_Notifications";
 
 AppDataSource.initialize()
   .then(() => {
@@ -21,6 +24,7 @@ AppDataSource.initialize()
     app.use("/api/v1", UserRoutes);
     app.use("/api/v1", ReplyRoutes);
     app.use("/api/v1", likeRoutes);
+    app.use("/api/v1", notificationRoutes);
 
     app.listen(PORT, () => console.log("Server Running on PORT: " + PORT));
   })

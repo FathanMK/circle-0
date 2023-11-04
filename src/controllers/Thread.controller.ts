@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
 import ThreadService from "../services/Thread.service";
+import ThreadQueue from "../queues/Thread.queue";
 
 class ThreadControllers {
   create(req: Request, res: Response) {
-    ThreadService.create(req, res);
-  }
-  findAll(req: Request, res: Response) {
-    ThreadService.findAll(req, res);
+    ThreadQueue.create(req, res);
   }
   findAllWithLimit(req: Request, res: Response) {
     ThreadService.findAllWithLimit(req, res);
@@ -14,8 +12,14 @@ class ThreadControllers {
   findWithId(req: Request, res: Response) {
     ThreadService.findWithId(req, res);
   }
+  findByThreadsByUserId(req: Request, res: Response) {
+    ThreadService.findThreadsByUserId(req, res);
+  }
   delete(req: Request, res: Response) {
-    ThreadService.delete(req, res);
+    ThreadQueue.delete(req, res);
+  }
+  update(req: Request, res: Response) {
+    ThreadQueue.update(req, res);
   }
 }
 

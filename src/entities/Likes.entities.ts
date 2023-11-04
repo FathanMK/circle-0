@@ -13,10 +13,16 @@ export class Like {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => User, (user) => user.likes, { onDelete: "CASCADE" })
+  @ManyToOne(() => User, (user) => user.likes, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   user: User;
 
-  @ManyToOne(() => Thread, (thread) => thread.likes, { onDelete: "CASCADE" })
+  @ManyToOne(() => Thread, (thread) => thread.likes, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   thread: Thread;
 
   @CreateDateColumn()

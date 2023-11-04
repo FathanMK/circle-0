@@ -1,8 +1,8 @@
 import Joi from "joi";
 
-const ThreadSchema = Joi.object({
+const ReplySchema = Joi.object({
   content: Joi.string(),
   image: Joi.string(),
 });
 
-export default ThreadSchema;
+export default ReplySchema;

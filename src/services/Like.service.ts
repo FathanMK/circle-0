@@ -4,12 +4,14 @@ import {
   ThreadRepository,
   UserRepository,
 } from "../repositories";
+import { RequestWithUserId } from "../interface/RequestWithUserId";
 
 class LikeServices {
-  async create(req: Request, res: Response): Promise<Response> {
+  async create(req: RequestWithUserId, res: Response): Promise<Response> {
     try {
       let empty: any;
-      const { userId, threadId } = req.body;
+      const userId = req.userId;
+      const { threadId } = req.body;
       const user = await UserRepository.findOneBy({
         id: userId,
       });
@@ -64,17 +66,18 @@ class LikeServices {
     }
   }
 
-  async deleteLike(req: Request, res: Response) {
+  async deleteLike(req: RequestWithUserId, res: Response) {
     try {
-      const data = req.body;
+      const userId = req.userId;
+      const { threadId } = req.body;
       const user = await UserRepository.findOne({
-        where: { id: data.userId },
+        where: { id: userId },
         select: { likes: { id: true, thread: { id: true } } },
         relations: { likes: { thread: true } },
       });
 
       const likeId = user?.likes.filter(
-        (like) => like.thread.id === data.threadId
+        (like) => like.thread.id === threadId
       )[0].id;
 
       await LikeRepository.delete(likeId as string)

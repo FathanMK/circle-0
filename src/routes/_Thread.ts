@@ -6,14 +6,29 @@ import verifyToken from "../middlewares/verifyToken";
 const threadRoutes = express.Router();
 
 // CREATE
-threadRoutes.post("/thread", upload.single("image"), ThreadController.create);
+threadRoutes.post(
+  "/thread",
+  [upload.single("image"), verifyToken],
+  ThreadController.create
+);
 
 // FIND BY ID
-threadRoutes.get("/thread/:id", ThreadController.findWithId);
+threadRoutes.get("/thread/:threadId", ThreadController.findWithId);
 
-// FIND ALL
-threadRoutes.get("/threads", ThreadController.findAllWithLimit);
+// FIND ALL WITH LIMIT 25
+threadRoutes.get("/threads", verifyToken, ThreadController.findAllWithLimit);
 
-threadRoutes.delete("/thread/:id", ThreadController.delete);
+// FIND ALL THREAD CREATED BY ID
+threadRoutes.get("/threadsById", verifyToken, ThreadController.findByThreadsByUserId);
+
+// UPDATE BY ID
+threadRoutes.put(
+  "/thread/:id",
+  [upload.single("image"), verifyToken],
+  ThreadController.update
+);
+
+// DELETE THREAD BY ID
+threadRoutes.delete("/thread/:threadId", verifyToken, ThreadController.delete);
 
 export default threadRoutes;

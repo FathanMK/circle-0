@@ -18,10 +18,10 @@ export class User {
   id: string;
 
   @Column()
-  username: string;
+  full_name: string;
 
   @Column()
-  full_name: string;
+  username: string;
 
   @Column()
   email: string;
@@ -29,10 +29,21 @@ export class User {
   @Column({ select: false })
   password: string;
 
-  @Column()
+  @Column({
+    default:
+      "https://res.cloudinary.com/dts5hyzdq/image/upload/v1698223958/vfygy9mtsax2i7zehkyl.jpg",
+    nullable: true,
+  })
   photo_profile: string;
 
-  @Column()
+  @Column({
+    default:
+      "https://res.cloudinary.com/dts5hyzdq/image/upload/v1698804475/j19x3xnfap1pt6wbwrfc.avif",
+    nullable: true,
+  })
+  banner_profile: string;
+
+  @Column({ default: "little bit empty here" })
   bio: string;
 
   @CreateDateColumn()
@@ -50,9 +61,9 @@ export class User {
   @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
 
-  @OneToMany(() => Following, (following) => following.followers)
-  followers: Following[];
-
   @OneToMany(() => Following, (following) => following.following)
-  following: Following[];
+  followers: User[];
+
+  @OneToMany(() => Following, (following) => following.followers)
+  following: User[];
 }
