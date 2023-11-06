@@ -73,6 +73,7 @@ export default function EditProfile() {
               accessToken={accessToken!}
               username={user?.username!}
               full_name={user?.full_name!}
+              bio={user?.bio!}
               photo_profile={user?.photo_profile!}
               banner_profile={user?.banner_profile!}
             />

@@ -9,6 +9,7 @@ import {
   Image,
   Button,
   Avatar,
+  Textarea,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
@@ -22,6 +23,7 @@ interface IEditProfileValues {
   full_name: string;
   username: string;
   email: string;
+  bio: string;
   photo_profile: string | File;
   banner_profile: string | File;
 }
@@ -29,6 +31,7 @@ interface IEditProfileValues {
 interface IEditProfileProps {
   full_name: string;
   username: string;
+  bio: string;
   photo_profile: string;
   banner_profile: string;
   accessToken: string;
@@ -38,6 +41,7 @@ export default function EditProfileForm({
   photo_profile,
   banner_profile,
   accessToken,
+  bio,
   full_name,
   username,
 }: IEditProfileProps) {
@@ -61,6 +65,7 @@ export default function EditProfileForm({
     defaultValues: {
       full_name,
       username,
+      bio,
     },
   });
 
@@ -107,9 +112,9 @@ export default function EditProfileForm({
   const onSubmit = (data: IEditProfileValues) => {
     formData.append("full_name", data.full_name);
     formData.append("username", data.username);
+    formData.append("bio", data.bio);
     formData.append("photo_profile", imageProfile as string | File);
     formData.append("banner_profile", bannerProfile as string | File);
-    // console.log(formData)
     mutation.mutate(formData);
   };
   return (
@@ -153,6 +158,27 @@ export default function EditProfileForm({
           />
           <FormErrorMessage>
             {errors.username && errors.username.message?.toString()}
+          </FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={Boolean(errors.bio)}>
+          <FormLabel>
+            <Text>
+              Bio{" "}
+              <Text as="span" color="red">
+                *
+              </Text>
+            </Text>
+          </FormLabel>
+          <Textarea
+            id="bio"
+            placeholder="Bio"
+            resize="none"
+            {...register("bio", {
+              required: "bio is required!",
+            })}
+          />
+          <FormErrorMessage>
+            {errors.bio && errors.bio.message?.toString()}
           </FormErrorMessage>
         </FormControl>
         <FormControl>
