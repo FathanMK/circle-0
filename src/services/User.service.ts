@@ -193,17 +193,11 @@ class UserServices {
   async updateProfile(req: RequestWithUserId, res: Response) {
     try {
       const userId = req.userId;
-      const { full_name, username, photo_profile, banner_profile } = req.body;
+      const { full_name, username, photo_profile, banner_profile, bio } =
+        req.body;
       const files = req.files;
       const user = await UserRepository.findOneBy({ id: userId });
       let photoProfileSrc, bannerProfileSrc;
-
-      const sameUsername = await UserRepository.findOneBy({ username });
-
-      if (sameUsername)
-        return res
-          .status(400)
-          .json({ status: "Failed", message: "Username already exists!" });
 
       if (files) {
         //@ts-ignore
@@ -319,6 +313,7 @@ class UserServices {
         id: userId,
         full_name,
         username,
+        bio,
         photo_profile: photoProfileSrc,
         banner_profile: bannerProfileSrc,
       };
